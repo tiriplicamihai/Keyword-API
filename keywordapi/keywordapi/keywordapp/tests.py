@@ -1,8 +1,7 @@
 import unittest
 import json
-
 from django.test import TestCase
-from keywordapi.keywordapp.models import Owner, Stream
+from keywordapi.keywordapp.models import Owner, Stream, Keyword
 
 
 class OwnerTest(TestCase):
@@ -62,5 +61,42 @@ class StreamTest(TestCase):
         new_language = 'Hindu'
         stream.set_language(new_language)
         self.assertTrue(stream.get_language()==new_language)
+
+
+class KeywordTest(TestCase):
+    def setUp(self):
+        self.owner = Owner.objects.create(username='test')
+        self.stream = Stream.objects.create(owner=self.owner)
+
+    def test_set_stream(self):
+        key = Keyword.objects.create(stream=self.stream)
+        self.assertTrue(key.get_stream().id==self.stream.id)
+
+    def test_default_key_type(self):
+        key = Keyword.objects.create(stream=self.stream)
+        self.assertEqual(key.get_key_type(), 'A')
+
+    def test_set_key_type(self):
+        ktype = 'O';
+        key = Keyword.objects.create(stream=self.stream, key_type=ktype)
+        self.assertEqual(key.get_key_type(), ktype)
+
+        ktype = 'N'
+        key.set_key_type(ktype)
+        self.assertEqual(key.get_key_type(), ktype)
+
+        ktype = 'T'
+        key.set_key_type(ktype)
+        self.assertFalse(key.get_key_type()==ktype)
+
+    def test_set_word(self):
+        word = 'test'
+        key = Keyword.objects.create(stream=self.stream, word=word)
+        self.assertEqual(key.get_word(), word)
+
+        word = 'newtest'
+        key.set_word(word)
+        self.assertEqual(key.get_word(), word)
+
 
 
