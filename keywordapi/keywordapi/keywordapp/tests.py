@@ -89,4 +89,14 @@ class KeywordTest(TestCase):
         key.set_key_type(ktype)
         self.assertFalse(key.get_key_type()==ktype)
 
+    def test_set_word(self):
+        word = 'test'
+        key = Keyword.objects.create(stream=self.stream, word=word)
+        self.assertEqual(key.get_word(), word)
+
+        word = 'newtest'
+        key.set_word(word)
+        self.assertEqual(key.get_word(), word)
+
+
 
