@@ -55,7 +55,8 @@ class Keyword(models.Model):
         self.stream = stream;
 
     def set_key_type(self, ktype):
-        self.key_type = ktype
+        if ktype in TYPE:
+            self.key_type = ktype
 
     def set_word(self, word):
         self.word = word

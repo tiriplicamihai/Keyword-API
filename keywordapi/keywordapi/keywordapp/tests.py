@@ -72,5 +72,10 @@ class KeywordTest(TestCase):
         key = Keyword.objects.create(stream=self.stream)
         self.assertTrue(key.get_stream().id==self.stream.id)
 
+    def test_default_key_type(self):
+        key = Keyword.objects.create(stream=self.stream)
+        self.assertEqual(key.get_key_type(), 'A')
+
+
 
 
