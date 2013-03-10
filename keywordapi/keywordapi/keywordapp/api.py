@@ -5,17 +5,12 @@ from tastypie.authorization import Authorization
 from tastypie import fields
 from keywordapi.keywordapp.models import *
 
-class UserResource(ModelResource):
-    class Meta:
-        queryset = User.objects.all()
-        resource_name = 'user'
-
 class KeywordResource(ModelResource):
     class Meta:
         queryset = Keyword.objects.all()
         resource_name = 'keyword/list'
+        excludes = ['id']
         include_resource_uri = False
-        authorization = Authorization()
 
 class StreamResource(ModelResource):
     keyword = fields.ToManyField('keywordapi.keywordapp.api.KeywordResource',
@@ -24,8 +19,8 @@ class StreamResource(ModelResource):
     class Meta:
         queryset = Stream.objects.all()
         resource_name = 'stream/list'
+        excludes = ['id']
         include_resource_uri = False
-        authorization = Authorization()
 
 class OwnerResource(ModelResource):
     stream = fields.ToManyField('keywordapi.keywordapp.api.StreamResource',
@@ -44,5 +39,5 @@ class OwnerResource(ModelResource):
         resource_name = 'owner/list'
         include_resource_uri = False
         always_return_data = True
-        authorization = Authorization()
+        fields = ['username', 'stream_number']
         allowed_methods = ['get', 'post']
