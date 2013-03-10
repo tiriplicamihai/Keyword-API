@@ -1,26 +1,35 @@
 import copy
+from django.contrib.auth.models import User
 from tastypie.resources import ModelResource
+from tastypie.authorization import Authorization
 from tastypie import fields
 from keywordapi.keywordapp.models import *
+
+class UserResource(ModelResource):
+    class Meta:
+        queryset = User.objects.all()
+        resource_name = 'user'
 
 class KeywordResource(ModelResource):
     class Meta:
         queryset = Keyword.objects.all()
-        excludes = ['id']
+        resource_name = 'keyword/list'
         include_resource_uri = False
+        authorization = Authorization()
 
 class StreamResource(ModelResource):
-    keywords = fields.OneToManyField('keywordapi.keywordapp.api.KeywordResource',
-                            'keywords', full=True)
+    keyword = fields.ToManyField('keywordapi.keywordapp.api.KeywordResource',
+                            'keywords')
 
     class Meta:
         queryset = Stream.objects.all()
-        excludes = ['id']
+        resource_name = 'stream/list'
         include_resource_uri = False
+        authorization = Authorization()
 
 class OwnerResource(ModelResource):
-    streams = fields.OneToManyField('keywordapi.keywordapp.api.StreamResource',
-                            'streams', full=True)
+    stream = fields.ToManyField('keywordapi.keywordapp.api.StreamResource',
+                            'streams')
 
     def alter_list_data_to_serialize(self, request, data_dict):
         if isinstance(data_dict, dict):
@@ -33,6 +42,7 @@ class OwnerResource(ModelResource):
     class Meta:
         queryset = Owner.objects.all()
         resource_name = 'owner/list'
-        fields = ['username', 'stream_number']
         include_resource_uri = False
-
+        always_return_data = True
+        authorization = Authorization()
+        allowed_methods = ['get', 'post']
