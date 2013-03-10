@@ -40,16 +40,16 @@ class Stream(models.Model):
         self.language = language
 
 
-class KeyWord(models.Model):
+class Keyword(models.Model):
     TYPE = (
         ('A', 'Must contain'),
         ('B', 'May contain'),
         ('N', 'Must not contain'),
     )
 
-    stream = Models.ForeignKey(Stream)
+    stream = models.ForeignKey(Stream)
     word = models.CharField(max_length=60)
-    key_type = (max_length=1, choices=TYPE, default='A')
+    key_type = models.CharField(max_length=1, choices=TYPE, default='A')
 
     def set_stream(self, stream):
         self.stream = stream;
