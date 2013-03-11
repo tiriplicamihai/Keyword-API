@@ -1,6 +1,8 @@
 import unittest
 import json
+from django.contrib.auth.models import User
 from django.test import TestCase
+from tastypie.test import ResourceTestCase
 from keywordapi.keywordapp.models import Owner, Stream, Keyword
 
 
@@ -99,4 +101,25 @@ class KeywordTest(TestCase):
         self.assertEqual(key.get_word(), word)
 
 
+class OwnerResourceTest(ResourceTestCase):
+    def setUp(self):
+        super(OwnerResourceTest, self).setUp()
 
+        self.username = 'user_test'
+        self.password = 'pass'
+        self.user = User.objects.create_user(self.username, 'test@test.com',
+                self.password)
+        self.owner_1 = Owner.objects.create(username="testowner",
+                stream_number=30)
+        self.detail_url = '/api/owner/list/{0}/'.format(self.owner_1.pk)
+        self.post_data = {
+                'username': 'api/owner/list/{0}/'.format(self.owner_1.pk),
+                'stream_number': 25
+                }
+
+    def get_credentials(self):
+        return self.create_basic(username=self.username,
+                password=self.password)
+
+    def test_get_list_unauthorized(self):
+        self.assertHttpUnauthorized(self.api_client.get('/api/owner/list/', format='json'))
