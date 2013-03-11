@@ -45,6 +45,5 @@ class OwnerResource(ModelResource):
         include_resource_uri = False
         always_return_data = True
         fields = ['username', 'stream_number']
-        allowed_methods = ['get', 'post']
         authorization = Authorization()
         authentication = BasicAuthentication()
