@@ -146,3 +146,15 @@ class OwnerResourceTest(ResourceTestCase):
         self.assertHttpUnauthorized(self.api_client.put(self.detail_url,
             format='json', data={}))
 
+    def test_put(self):
+        original_data = self.deserialize(self.api_client.get(self.detail_url,
+            format='json', authentication=self.get_credentials()))
+
+        new_data = original_data.copy()
+        new_data['stream_number'] = 60
+        owner_no = Owner.objects.count()
+        self.assertHttpAccepted(self.api_client.put(self.detail_url,
+            format='json', data=new_data,
+            authentication=self.get_credentials()))
+        self.assertEqual(Owner.objects.count(), owner_no)
+        self.assertEqual(Owner.objects.get(pk=self.owner_1.pk).stream_number, 60)
