@@ -113,7 +113,9 @@ class OwnerResourceTest(ResourceTestCase):
                 stream_number=30)
         self.detail_url = '/api/owner/list/{0}/'.format(self.owner_1.pk)
         self.post_data = {
-                'username': 'api/owner/list/{0}/'.format(self.owner_1.pk),
+                'username': 'newowner',
+                'password': 'pass',
+                'stream': [],
                 'stream_number': 25
                 }
 
@@ -132,4 +134,11 @@ class OwnerResourceTest(ResourceTestCase):
     def test_post_list_unauthorized(self):
         self.assertHttpUnauthorized(self.api_client.post('/api/owner/list/',
             format='json', data=self.post_data))
+
+    def test_post_list(self):
+        owner_no = Owner.objects.count()
+        self.assertHttpCreated(self.api_client.post('/api/owner/list/',
+            format='json', data=self.post_data,
+            authentication=self.get_credentials()))
+        self.assertEqual(Owner.objects.count(), owner_no + 1)
 
