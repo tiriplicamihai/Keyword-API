@@ -158,3 +158,8 @@ class OwnerResourceTest(ResourceTestCase):
             authentication=self.get_credentials()))
         self.assertEqual(Owner.objects.count(), owner_no)
         self.assertEqual(Owner.objects.get(pk=self.owner_1.pk).stream_number, 60)
+
+    def test_delete_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.delete(self.detail_url,
+            format='json'))
+
