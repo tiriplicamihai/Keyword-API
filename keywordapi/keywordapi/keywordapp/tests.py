@@ -163,3 +163,10 @@ class OwnerResourceTest(ResourceTestCase):
         self.assertHttpUnauthorized(self.api_client.delete(self.detail_url,
             format='json'))
 
+    def test_delete(self):
+        owner_no = Owner.objects.count()
+        self.assertHttpAccepted(self.api_client.delete(self.detail_url,
+            format='json', authentication=self.get_credentials()))
+        self.assertEqual(Owner.objects.count(), owner_no - 1)
+
+
