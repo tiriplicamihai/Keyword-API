@@ -3,6 +3,7 @@ import json
 from django.contrib.auth.models import User
 from django.test import TestCase
 from tastypie.test import ResourceTestCase
+from tastypie.utils.timezone import now
 from keywordapi.keywordapp.models import Owner, Stream, Keyword
 
 
@@ -109,7 +110,7 @@ class OwnerResourceTest(ResourceTestCase):
         self.password = 'pass'
         self.user = User.objects.create_user(self.username, 'test@test.com',
                 self.password)
-        self.owner_1 = Owner.objects.create(username="testowner",
+        self.owner_1 = Owner.objects.create(username='testowner',
                 stream_number=30)
         self.detail_url = '/api/owner/list/{0}/'.format(self.owner_1.pk)
         self.post_data = {
@@ -169,4 +170,36 @@ class OwnerResourceTest(ResourceTestCase):
             format='json', authentication=self.get_credentials()))
         self.assertEqual(Owner.objects.count(), owner_no - 1)
 
+
+class StreamResourceTest(ResourceTestCase):
+    def setUp(self):
+        super(StreamResourceTest, self).setUp()
+
+        self.username = 'user_test'
+        self.password = 'pass'
+        self.user = User.objects.create_user(self.username, 'test@test.com',
+                self.password)
+        self.owner = Owner.objects.create(username='testowner',
+                stream_number=30)
+        self.stream = Stream.objects.create(owner=self.owner, name='teststream')
+        self.detail_url = '/api/stream/list/{0}/'.format(self.stream.pk)
+        self.post_data = {
+                'name': 'newteststream',
+                'owner': self.owner.pk,
+                'keyword': [],
+                'language': 'Romanian',
+                'location': 'RO'
+                }
+
+    def get_credentials(self):
+        return self.create_basic(username=self.username,
+                password=self.password)
+
+    def test_get_list_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.get('/api/stream/list/', format='json'))
+
+    def test_get_list(self):
+        resp = self.api_client.get('/api/stream/list/', format='json',
+                authentication=self.get_credentials())
+        self.assertValidJSONResponse(resp)
 
