@@ -129,3 +129,7 @@ class OwnerResourceTest(ResourceTestCase):
                 authentication=self.get_credentials())
         self.assertValidJSONResponse(resp)
 
+    def test_post_list_unauthorized(self):
+        self.assertHttpUnauthorized(self.api_client.post('/api/owner/list/',
+            format='json', data=self.post_data))
+
