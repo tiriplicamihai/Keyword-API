@@ -241,3 +241,9 @@ class StreamResourceTest(ResourceTestCase):
         self.assertHttpUnauthorized(self.api_client.delete(self.detail_url,
             format='json'))
 
+    def test_delete(self):
+        stream_no = Stream.objects.count()
+        self.assertHttpAccepted(self.api_client.delete(self.detail_url,
+            format='json', authentication=self.get_credentials()))
+        self.assertEqual(Stream.objects.count(), stream_no - 1)
+
