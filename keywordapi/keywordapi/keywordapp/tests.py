@@ -263,8 +263,8 @@ class KeywordResourceTest(ResourceTestCase):
                 word='testkeyword')
         self.detail_url = '/api/keyword/list/{0}/'.format(self.keyword.pk)
         self.post_data = {
-                'stream': self.stream.pk,
                 'word': 'newkey',
+                'stream': self.stream.pk,
                 'key_type': 'O'
                 }
 
@@ -284,4 +284,12 @@ class KeywordResourceTest(ResourceTestCase):
     def test_post_list_unauthenticated(self):
         self.assertHttpUnauthorized(self.api_client.post('/api/keyword/list/',
             format='json', data=self.post_data))
+
+    def test_post_list(self):
+        keyword_no = Keyword.objects.count()
+        self.assertHttpCreated(self.api_client.post('/api/keyword/list/',
+            format='json', data=self.post_data,
+            authentication=self.get_credentials()))
+        self.assertEqual(Keyword.objects.count(), keyword_no + 1)
+
 
