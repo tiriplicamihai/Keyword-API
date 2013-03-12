@@ -218,3 +218,24 @@ class StreamResourceTest(ResourceTestCase):
         self.assertHttpUnauthorized(self.api_client.put(self.detail_url,
             format='json', data={}))
 
+    def test_put(self):
+        stream_no = Stream.objects.count()
+        original_data = self.deserialize(self.api_client.get(self.detail_url, format='json',
+                authentication=self.get_credentials()))
+
+        new_data = original_data.copy()
+        new_data['language'] = 'French'
+        new_data['name'] = 'test'
+        new_data['location'] = 'UK'
+
+        self.assertHttpAccepted(self.api_client.put(self.detail_url,
+            format='json', data=new_data,
+            authentication=self.get_credentials()))
+
+        self.assertEqual(Stream.objects.count(), stream_no)
+        self.assertEqual(Stream.objects.get(pk=self.stream.pk).language, 'French')
+        self.assertEqual(Stream.objects.get(pk=self.stream.pk).name, 'test')
+        self.assertEqual(Stream.objects.get(pk=self.stream.pk).location, 'UK')
+
+
+
