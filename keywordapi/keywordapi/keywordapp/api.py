@@ -1,6 +1,7 @@
 import copy
 from django.contrib.auth.models import User
 from tastypie.resources import ModelResource
+from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
 from tastypie import fields
 from keywordapi.keywordapp.models import *
@@ -10,6 +11,8 @@ class KeywordResource(ModelResource):
         queryset = Keyword.objects.all()
         resource_name = 'keyword/list'
         excludes = ['id']
+        authentication = BasicAuthentication()
+        authorization = Authorization()
         include_resource_uri = False
 
 class StreamResource(ModelResource):
@@ -20,6 +23,8 @@ class StreamResource(ModelResource):
         queryset = Stream.objects.all()
         resource_name = 'stream/list'
         excludes = ['id']
+        authentication = BasicAuthentication()
+        authorization = Authorization()
         include_resource_uri = False
 
 class OwnerResource(ModelResource):
@@ -40,4 +45,5 @@ class OwnerResource(ModelResource):
         include_resource_uri = False
         always_return_data = True
         fields = ['username', 'stream_number']
-        allowed_methods = ['get', 'post']
+        authorization = Authorization()
+        authentication = BasicAuthentication()

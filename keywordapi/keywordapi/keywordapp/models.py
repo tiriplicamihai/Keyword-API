@@ -51,7 +51,7 @@ class Keyword(models.Model):
         ('N', 'Must not contain'),
     )
 
-    stream = models.ForeignKey(Stream, related_name='keywords')
+    stream = models.ForeignKey(Stream, related_name='keywords', null=True)
     word = models.CharField(max_length=60)
     key_type = models.CharField(max_length=1, choices=TYPE, default='A')
 

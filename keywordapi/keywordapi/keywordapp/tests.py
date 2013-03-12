@@ -1,6 +1,9 @@
 import unittest
 import json
+from django.contrib.auth.models import User
 from django.test import TestCase
+from tastypie.test import ResourceTestCase
+from tastypie.utils.timezone import now
 from keywordapi.keywordapp.models import Owner, Stream, Keyword
 
 
@@ -99,4 +102,225 @@ class KeywordTest(TestCase):
         self.assertEqual(key.get_word(), word)
 
 
+class OwnerResourceTest(ResourceTestCase):
+    def setUp(self):
+        super(OwnerResourceTest, self).setUp()
+
+        self.username = 'user_test'
+        self.password = 'pass'
+        self.user = User.objects.create_user(self.username, 'test@test.com',
+                self.password)
+        self.owner_1 = Owner.objects.create(username='testowner',
+                stream_number=30)
+        self.detail_url = '/api/owner/list/{0}/'.format(self.owner_1.pk)
+        self.post_data = {
+                'username': 'newowner',
+                'password': 'pass',
+                'stream': [],
+                'stream_number': 25
+                }
+
+    def get_credentials(self):
+        return self.create_basic(username=self.username,
+                password=self.password)
+
+    def test_get_list_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.get('/api/owner/list/', format='json'))
+
+    def test_get_list_json(self):
+        resp = self.api_client.get('/api/owner/list/', format='json',
+                authentication=self.get_credentials())
+        self.assertValidJSONResponse(resp)
+
+    def test_post_list_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.post('/api/owner/list/',
+            format='json', data=self.post_data))
+
+    def test_post_list(self):
+        owner_no = Owner.objects.count()
+        self.assertHttpCreated(self.api_client.post('/api/owner/list/',
+            format='json', data=self.post_data,
+            authentication=self.get_credentials()))
+        self.assertEqual(Owner.objects.count(), owner_no + 1)
+
+    def test_put_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.put(self.detail_url,
+            format='json', data={}))
+
+    def test_put(self):
+        original_data = self.deserialize(self.api_client.get(self.detail_url,
+            format='json', authentication=self.get_credentials()))
+
+        new_data = original_data.copy()
+        new_data['stream_number'] = 60
+        owner_no = Owner.objects.count()
+        self.assertHttpAccepted(self.api_client.put(self.detail_url,
+            format='json', data=new_data,
+            authentication=self.get_credentials()))
+        self.assertEqual(Owner.objects.count(), owner_no)
+        self.assertEqual(Owner.objects.get(pk=self.owner_1.pk).stream_number, 60)
+
+    def test_delete_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.delete(self.detail_url,
+            format='json'))
+
+    def test_delete(self):
+        owner_no = Owner.objects.count()
+        self.assertHttpAccepted(self.api_client.delete(self.detail_url,
+            format='json', authentication=self.get_credentials()))
+        self.assertEqual(Owner.objects.count(), owner_no - 1)
+
+
+class StreamResourceTest(ResourceTestCase):
+    def setUp(self):
+        super(StreamResourceTest, self).setUp()
+
+        self.username = 'user_test'
+        self.password = 'pass'
+        self.user = User.objects.create_user(self.username, 'test@test.com',
+                self.password)
+        self.owner = Owner.objects.create(username='testowner',
+                stream_number=30)
+        self.stream = Stream.objects.create(owner=self.owner, name='teststream')
+        self.detail_url = '/api/stream/list/{0}/'.format(self.stream.pk)
+        self.post_data = {
+                'name': 'newteststream',
+                'owner': self.owner.pk,
+                'keyword': [],
+                'language': 'Romanian',
+                'location': 'RO'
+                }
+
+    def get_credentials(self):
+        return self.create_basic(username=self.username,
+                password=self.password)
+
+    def test_get_list_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.get('/api/stream/list/', format='json'))
+
+    def test_get_list(self):
+        resp = self.api_client.get('/api/stream/list/', format='json',
+                authentication=self.get_credentials())
+        self.assertValidJSONResponse(resp)
+
+    def test_post_list_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.post('/api/stream/list/',
+            format='json', data=self.post_data))
+
+    def test_post_list(self):
+        stream_no = Stream.objects.count()
+        self.assertHttpCreated(self.api_client.post('/api/stream/list/',
+            format='json', data=self.post_data,
+            authentication=self.get_credentials()))
+        self.assertEqual(Stream.objects.count(), stream_no + 1)
+
+    def test_put_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.put(self.detail_url,
+            format='json', data={}))
+
+    def test_put(self):
+        stream_no = Stream.objects.count()
+        original_data = self.deserialize(self.api_client.get(self.detail_url, format='json',
+                authentication=self.get_credentials()))
+
+        new_data = original_data.copy()
+        new_data['language'] = 'French'
+        new_data['name'] = 'test'
+        new_data['location'] = 'UK'
+
+        self.assertHttpAccepted(self.api_client.put(self.detail_url,
+            format='json', data=new_data,
+            authentication=self.get_credentials()))
+
+        self.assertEqual(Stream.objects.count(), stream_no)
+        self.assertEqual(Stream.objects.get(pk=self.stream.pk).language, 'French')
+        self.assertEqual(Stream.objects.get(pk=self.stream.pk).name, 'test')
+        self.assertEqual(Stream.objects.get(pk=self.stream.pk).location, 'UK')
+
+    def test_delete_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.delete(self.detail_url,
+            format='json'))
+
+    def test_delete(self):
+        stream_no = Stream.objects.count()
+        self.assertHttpAccepted(self.api_client.delete(self.detail_url,
+            format='json', authentication=self.get_credentials()))
+        self.assertEqual(Stream.objects.count(), stream_no - 1)
+
+
+class KeywordResourceTest(ResourceTestCase):
+    def setUp(self):
+        super(KeywordResourceTest, self).setUp()
+
+        self.username = 'user_test'
+        self.password = 'pass'
+        self.user = User.objects.create_user(self.username, 'test@test.com',
+                self.password)
+        self.owner = Owner.objects.create(username='testowner',
+                stream_number=30)
+        self.stream = Stream.objects.create(owner=self.owner, name='teststream')
+        self.keyword = Keyword.objects.create(stream=self.stream,
+                word='testkeyword')
+        self.detail_url = '/api/keyword/list/{0}/'.format(self.keyword.pk)
+        self.post_data = {
+                'word': 'newkey',
+                'stream': self.stream.pk,
+                'key_type': 'O'
+                }
+
+    def get_credentials(self):
+        return self.create_basic(username=self.username,
+                password=self.password)
+
+    def test_get_list_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.get('/api/keyword/list/',
+            format='json'))
+
+    def test_get_list(self):
+        resp = self.api_client.get('/api/keyword/list/', format='json',
+                authentication=self.get_credentials())
+        self.assertValidJSONResponse(resp)
+
+    def test_post_list_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.post('/api/keyword/list/',
+            format='json', data=self.post_data))
+
+    def test_post_list(self):
+        keyword_no = Keyword.objects.count()
+        self.assertHttpCreated(self.api_client.post('/api/keyword/list/',
+            format='json', data=self.post_data,
+            authentication=self.get_credentials()))
+        self.assertEqual(Keyword.objects.count(), keyword_no + 1)
+
+    def test_put_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.put(self.detail_url,
+            format='json', data={}))
+
+    def test_put(self):
+        keyword_no = Keyword.objects.count()
+        original_data = self.deserialize(self.api_client.get(self.detail_url,
+            format='json', authentication=self.get_credentials()))
+
+        new_data = original_data.copy()
+        new_data['word'] = 'keyword'
+        new_data['key_type'] = 'N'
+
+        self.assertHttpAccepted(self.api_client.put(self.detail_url,
+            format='json', data=new_data,
+            authentication=self.get_credentials()))
+
+        self.assertEqual(Keyword.objects.count(), keyword_no)
+        kw = Keyword.objects.get(pk=self.keyword.pk)
+        self.assertEqual(kw.word, 'keyword')
+        self.assertEqual(kw.key_type, 'N')
+
+    def test_delete_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.delete(self.detail_url,
+            format='json'))
+
+    def test_delete(self):
+        keyword_no = Keyword.objects.count()
+        self.assertHttpAccepted(self.api_client.delete(self.detail_url,
+            format='json', authentication=self.get_credentials()))
+        self.assertEqual(Keyword.objects.count(), keyword_no - 1)
 
