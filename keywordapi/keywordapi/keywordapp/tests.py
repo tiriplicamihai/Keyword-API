@@ -281,3 +281,7 @@ class KeywordResourceTest(ResourceTestCase):
                 authentication=self.get_credentials())
         self.assertValidJSONResponse(resp)
 
+    def test_post_list_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.post('/api/keyword/list/',
+            format='json', data=self.post_data))
+
