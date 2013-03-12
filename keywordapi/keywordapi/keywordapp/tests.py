@@ -237,5 +237,7 @@ class StreamResourceTest(ResourceTestCase):
         self.assertEqual(Stream.objects.get(pk=self.stream.pk).name, 'test')
         self.assertEqual(Stream.objects.get(pk=self.stream.pk).location, 'UK')
 
-
+    def test_delete_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.delete(self.detail_url,
+            format='json'))
 
