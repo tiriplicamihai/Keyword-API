@@ -247,3 +247,32 @@ class StreamResourceTest(ResourceTestCase):
             format='json', authentication=self.get_credentials()))
         self.assertEqual(Stream.objects.count(), stream_no - 1)
 
+
+class KeywordResourceTest(ResourceTestCase):
+    def setUp(self):
+        super(KeywordResourceTest, self).setUp()
+
+        self.username = 'user_test'
+        self.password = 'pass'
+        self.user = User.objects.create_user(self.username, 'test@test.com',
+                self.password)
+        self.owner = Owner.objects.create(username='testowner',
+                stream_number=30)
+        self.stream = Stream.objects.create(owner=self.owner, name='teststream')
+        self.keyword = Keyword.objects.create(stream=self.stream,
+                word='testkeyword')
+        self.detail_url = '/api/keyword/list/{0}/'.format(self.keyword.pk)
+        self.post_data = {
+                'stream': self.stream.pk,
+                'word': 'newkey',
+                'key_type': 'O'
+                }
+
+    def get_credentials(self):
+        return self.create_basic(username=self.username,
+                password=self.password)
+
+    def test_get_list_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.get('/api/keyword/list/',
+            format='json'))
+
