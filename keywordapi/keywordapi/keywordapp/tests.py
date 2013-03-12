@@ -214,4 +214,7 @@ class StreamResourceTest(ResourceTestCase):
             authentication=self.get_credentials()))
         self.assertEqual(Stream.objects.count(), stream_no + 1)
 
+    def test_put_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.put(self.detail_url,
+            format='json', data={}))
 
