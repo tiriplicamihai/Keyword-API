@@ -207,3 +207,11 @@ class StreamResourceTest(ResourceTestCase):
         self.assertHttpUnauthorized(self.api_client.post('/api/stream/list/',
             format='json', data=self.post_data))
 
+    def test_post_list(self):
+        stream_no = Stream.objects.count()
+        self.assertHttpCreated(self.api_client.post('/api/stream/list/',
+            format='json', data=self.post_data,
+            authentication=self.get_credentials()))
+        self.assertEqual(Stream.objects.count(), stream_no + 1)
+
+
