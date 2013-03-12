@@ -296,3 +296,21 @@ class KeywordResourceTest(ResourceTestCase):
         self.assertHttpUnauthorized(self.api_client.put(self.detail_url,
             format='json', data={}))
 
+    def test_put(self):
+        keyword_no = Keyword.objects.count()
+        original_data = self.deserialize(self.api_client.get(self.detail_url,
+            format='json', authentication=self.get_credentials()))
+
+        new_data = original_data.copy()
+        new_data['word'] = 'keyword'
+        new_data['key_type'] = 'N'
+
+        self.assertHttpAccepted(self.api_client.put(self.detail_url,
+            format='json', data=new_data,
+            authentication=self.get_credentials()))
+
+        self.assertEqual(Keyword.objects.count(), keyword_no)
+        kw = Keyword.objects.get(pk=self.keyword.pk)
+        self.assertEqual(kw.word, 'keyword')
+        self.assertEqual(kw.key_type, 'N')
+
