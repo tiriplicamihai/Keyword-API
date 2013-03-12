@@ -314,3 +314,7 @@ class KeywordResourceTest(ResourceTestCase):
         self.assertEqual(kw.word, 'keyword')
         self.assertEqual(kw.key_type, 'N')
 
+    def test_delete_unauthenticated(self):
+        self.assertHttpUnauthorized(self.api_client.delete(self.detail_url,
+            format='json'))
+
