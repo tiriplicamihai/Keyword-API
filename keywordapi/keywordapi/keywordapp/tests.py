@@ -69,20 +69,24 @@ class StreamTest(TestCase):
 
 class KeywordTest(TestCase):
     def setUp(self):
-        self.owner = Owner.objects.create(username='test')
-        self.stream = Stream.objects.create(owner=self.owner)
+        self.owner = OwnerFactory()
+        self.stream = StreamFactory(owner=self.owner)
 
     def test_set_stream(self):
-        key = Keyword.objects.create(stream=self.stream)
+        key = KeywordFactory(stream=self.stream)
         self.assertTrue(key.get_stream().id==self.stream.id)
 
+        stream = StreamFactory()
+        key.set_stream(stream)
+        self.assertTrue(key.get_stream().id==stream.id)
+
     def test_default_key_type(self):
-        key = Keyword.objects.create(stream=self.stream)
+        key = KeywordFactory(stream=self.stream)
         self.assertEqual(key.get_key_type(), 'A')
 
     def test_set_key_type(self):
         ktype = 'O';
-        key = Keyword.objects.create(stream=self.stream, key_type=ktype)
+        key = KeywordFactory(stream=self.stream, key_type=ktype)
         self.assertEqual(key.get_key_type(), ktype)
 
         ktype = 'N'
@@ -95,7 +99,7 @@ class KeywordTest(TestCase):
 
     def test_set_word(self):
         word = 'test'
-        key = Keyword.objects.create(stream=self.stream, word=word)
+        key = KeywordFactory(stream=self.stream, word=word)
         self.assertEqual(key.get_word(), word)
 
         word = 'newtest'
@@ -179,9 +183,6 @@ class StreamResourceTest(ResourceTestCase):
         self.password = 'pass'
         self.user = User.objects.create_user(self.username, 'test@test.com',
                 self.password)
-        #self.owner = Owner.objects.create(username='testowner',
-        #        stream_number=30)
-        #self.stream = Stream.objects.create(owner=self.owner, name='teststream')
         self.owner = OwnerFactory()
         self.stream = StreamFactory()
         self.detail_url = '/api/stream/list/{0}/'.format(self.stream.pk)

@@ -45,8 +45,24 @@ class StreamFactory(factory.Factory):
 
 
 class KeywordFactory(factory.Factory):
-    FACTORY_FOR = Keyword
+    @classmethod
+    def _prepare(cls, create, **kwargs):
+        stream = kwargs.pop('stream', None)
+        word = kwargs.pop('word', None)
+        key_type = kwargs.pop('key_type', None)
+        keyword = super(KeywordFactory, cls)._prepare(create, **kwargs)
+
+        if stream:
+            keyword.set_stream(stream)
+        if word:
+            keyword.set_word(word)
+        if key_type:
+            keyword.set_key_type(key_type)
+        if create:
+            keyword.save()
+        return keyword
+
 
     stream = factory.SubFactory(StreamFactory)
-    word = factory.Sequence(lambda n: 'TestKeyWord {0}'.format(n))
+    word = factory.LazyAttribute(lambda n: '%030x' % random.randrange(256 ** 15))
 
