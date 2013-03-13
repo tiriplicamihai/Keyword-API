@@ -5,6 +5,7 @@ from django.test import TestCase
 from tastypie.test import ResourceTestCase
 from tastypie.utils.timezone import now
 from keywordapi.keywordapp.models import Owner, Stream, Keyword
+from keywordapi.keywordapp.factories import *
 
 
 class OwnerTest(TestCase):
@@ -110,8 +111,7 @@ class OwnerResourceTest(ResourceTestCase):
         self.password = 'pass'
         self.user = User.objects.create_user(self.username, 'test@test.com',
                 self.password)
-        self.owner_1 = Owner.objects.create(username='testowner',
-                stream_number=30)
+        self.owner_1 = OwnerFactory()
         self.detail_url = '/api/owner/list/{0}/'.format(self.owner_1.pk)
         self.post_data = {
                 'username': 'newowner',
@@ -179,9 +179,11 @@ class StreamResourceTest(ResourceTestCase):
         self.password = 'pass'
         self.user = User.objects.create_user(self.username, 'test@test.com',
                 self.password)
-        self.owner = Owner.objects.create(username='testowner',
-                stream_number=30)
-        self.stream = Stream.objects.create(owner=self.owner, name='teststream')
+        #self.owner = Owner.objects.create(username='testowner',
+        #        stream_number=30)
+        #self.stream = Stream.objects.create(owner=self.owner, name='teststream')
+        self.owner = OwnerFactory()
+        self.stream = StreamFactory()
         self.detail_url = '/api/stream/list/{0}/'.format(self.stream.pk)
         self.post_data = {
                 'name': 'newteststream',
@@ -256,11 +258,9 @@ class KeywordResourceTest(ResourceTestCase):
         self.password = 'pass'
         self.user = User.objects.create_user(self.username, 'test@test.com',
                 self.password)
-        self.owner = Owner.objects.create(username='testowner',
-                stream_number=30)
-        self.stream = Stream.objects.create(owner=self.owner, name='teststream')
-        self.keyword = Keyword.objects.create(stream=self.stream,
-                word='testkeyword')
+        self.owner = OwnerFactory()
+        self.stream = StreamFactory()
+        self.keyword = KeywordFactory()
         self.detail_url = '/api/keyword/list/{0}/'.format(self.keyword.pk)
         self.post_data = {
                 'word': 'newkey',
