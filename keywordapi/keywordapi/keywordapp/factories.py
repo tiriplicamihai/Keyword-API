@@ -16,14 +16,32 @@ class OwnerFactory(factory.Factory):
 
 
     username = factory.LazyAttribute(lambda n: '%030x' % random.randrange(256 ** 15))
-    stream_number = 15
 
 
 class StreamFactory(factory.Factory):
-    FACTORY_FOR = Stream
+    @classmethod
+    def _prepare(cls, create, **kwargs):
+        owner = kwargs.pop('owner', None)
+        name = kwargs.pop('name', None)
+        language = kwargs.pop('language', None)
+        location = kwargs.pop('location', None)
+        stream = super(StreamFactory, cls)._prepare(create, **kwargs)
+
+        if owner:
+            stream.set_owner(owner)
+        if name:
+            stream.set_name(name)
+        if language:
+            stream.set_language(language)
+        if location:
+            stream.set_location(location)
+        if create:
+            stream.save()
+        return stream
+
 
     owner = factory.SubFactory(OwnerFactory)
-    name = factory.Sequence(lambda n: 'TestStream {0}'.format(n))
+    name = factory.LazyAttribute(lambda n: '%030x' % random.randrange(256 ** 15))
 
 
 class KeywordFactory(factory.Factory):
