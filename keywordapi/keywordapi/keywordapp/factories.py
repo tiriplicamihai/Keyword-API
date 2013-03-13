@@ -3,10 +3,20 @@ import random
 from models import *
 
 class OwnerFactory(factory.Factory):
-    FACTORY_FOR = Owner
+    @classmethod
+    def _prepare(cls, create, **kwargs):
+        stream_number = kwargs.pop('stream_number', None)
+        owner = super(OwnerFactory, cls)._prepare(create, **kwargs)
 
-    stream_number = random.randint(0, 100)
-    username = factory.Sequence(lambda n: 'TestOwner {0}'.format(n))
+        if stream_number:
+            owner.set_stream_number(stream_number)
+        if create:
+            owner.save()
+        return owner
+
+
+    username = factory.LazyAttribute(lambda n: '%030x' % random.randrange(256 ** 15))
+    stream_number = 15
 
 
 class StreamFactory(factory.Factory):
