@@ -10,11 +10,11 @@ from keywordapi.keywordapp.factories import *
 
 class OwnerTest(TestCase):
     def test_default_stream_number(self):
-        owner = Owner.objects.create(username='test')
+        owner = OwnerFactory()
         self.assertTrue(owner.get_stream_number()==15)
 
     def test_stream_number(self):
-        owner = Owner.objects.create(username='test', stream_number=20)
+        owner = OwnerFactory(stream_number=20)
         self.assertFalse(owner.get_stream_number()==15)
         self.assertTrue(owner.get_stream_number()==20)
 
