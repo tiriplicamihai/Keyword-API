@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 class Owner(User):
     stream_number = models.IntegerField(default=15)
 
+    def set_stream_number(self, stream_number):
+        self.stream_number = stream_number
+
     def get_stream_number(self):
         return self.stream_number
 

@@ -10,30 +10,30 @@ from keywordapi.keywordapp.factories import *
 
 class OwnerTest(TestCase):
     def test_default_stream_number(self):
-        owner = Owner.objects.create(username='test')
+        owner = OwnerFactory()
         self.assertTrue(owner.get_stream_number()==15)
 
     def test_stream_number(self):
-        owner = Owner.objects.create(username='test', stream_number=20)
+        owner = OwnerFactory(stream_number=20)
         self.assertFalse(owner.get_stream_number()==15)
         self.assertTrue(owner.get_stream_number()==20)
 
 
 class StreamTest(TestCase):
     def setUp(self):
-        self.owner = Owner.objects.create(username='test')
+        self.owner = OwnerFactory()
 
     def test_set_owner(self):
-        stream = Stream.objects.create(owner=self.owner)
+        stream = StreamFactory(owner=self.owner)
         self.assertTrue(stream.get_owner().id==self.owner.id)
 
-        new_owner = Owner.objects.create(username='test2')
+        new_owner = OwnerFactory()
         stream.set_owner(new_owner)
         self.assertTrue(stream.get_owner().id==new_owner.id)
 
     def test_set_name(self):
         name = 'test1'
-        stream = Stream.objects.create(owner=self.owner, name=name)
+        stream = StreamFactory(owner=self.owner, name=name)
         self.assertTrue(stream.get_name()==name)
 
         new_name = 'test2'
@@ -41,12 +41,12 @@ class StreamTest(TestCase):
         self.assertTrue(stream.get_name()==new_name)
 
     def test_default_location(self):
-        stream = Stream.objects.create(owner=self.owner)
+        stream = StreamFactory(owner=self.owner)
         self.assertTrue(stream.get_location()=='US')
 
     def test_set_location(self):
         location = 'RO'
-        stream = Stream.objects.create(owner=self.owner, location=location)
+        stream = StreamFactory(owner=self.owner, location=location)
         self.assertTrue(stream.get_location()==location)
 
         new_location = 'UK'
@@ -54,12 +54,12 @@ class StreamTest(TestCase):
         self.assertTrue(stream.get_location()==new_location)
 
     def test_default_language(self):
-        stream = Stream.objects.create(owner=self.owner)
+        stream = StreamFactory(owner=self.owner)
         self.assertTrue(stream.get_language()=='English')
 
     def test_set_language(self):
         language = 'Romanian'
-        stream = Stream.objects.create(owner=self.owner, language=language)
+        stream = StreamFactory(owner=self.owner, language=language)
         self.assertTrue(stream.get_language()==language)
 
         new_language = 'Hindu'
@@ -69,20 +69,24 @@ class StreamTest(TestCase):
 
 class KeywordTest(TestCase):
     def setUp(self):
-        self.owner = Owner.objects.create(username='test')
-        self.stream = Stream.objects.create(owner=self.owner)
+        self.owner = OwnerFactory()
+        self.stream = StreamFactory(owner=self.owner)
 
     def test_set_stream(self):
-        key = Keyword.objects.create(stream=self.stream)
+        key = KeywordFactory(stream=self.stream)
         self.assertTrue(key.get_stream().id==self.stream.id)
 
+        stream = StreamFactory()
+        key.set_stream(stream)
+        self.assertTrue(key.get_stream().id==stream.id)
+
     def test_default_key_type(self):
-        key = Keyword.objects.create(stream=self.stream)
+        key = KeywordFactory(stream=self.stream)
         self.assertEqual(key.get_key_type(), 'A')
 
     def test_set_key_type(self):
         ktype = 'O';
-        key = Keyword.objects.create(stream=self.stream, key_type=ktype)
+        key = KeywordFactory(stream=self.stream, key_type=ktype)
         self.assertEqual(key.get_key_type(), ktype)
 
         ktype = 'N'
@@ -95,7 +99,7 @@ class KeywordTest(TestCase):
 
     def test_set_word(self):
         word = 'test'
-        key = Keyword.objects.create(stream=self.stream, word=word)
+        key = KeywordFactory(stream=self.stream, word=word)
         self.assertEqual(key.get_word(), word)
 
         word = 'newtest'
@@ -179,9 +183,6 @@ class StreamResourceTest(ResourceTestCase):
         self.password = 'pass'
         self.user = User.objects.create_user(self.username, 'test@test.com',
                 self.password)
-        #self.owner = Owner.objects.create(username='testowner',
-        #        stream_number=30)
-        #self.stream = Stream.objects.create(owner=self.owner, name='teststream')
         self.owner = OwnerFactory()
         self.stream = StreamFactory()
         self.detail_url = '/api/stream/list/{0}/'.format(self.stream.pk)
