@@ -9,7 +9,7 @@ class OwnerFactory(factory.Factory):
         owner = super(OwnerFactory, cls)._prepare(create, **kwargs)
 
         if stream_number:
-            owner.set_stream_number(stream_number)
+            owner.stream_number = stream_number
         if create:
             owner.save()
         return owner
@@ -28,13 +28,13 @@ class StreamFactory(factory.Factory):
         stream = super(StreamFactory, cls)._prepare(create, **kwargs)
 
         if owner:
-            stream.set_owner(owner)
+            stream.owner = owner
         if name:
-            stream.set_name(name)
+            stream.name = name
         if language:
-            stream.set_language(language)
+            stream.language = language
         if location:
-            stream.set_location(location)
+            stream.location = location
         if create:
             stream.save()
         return stream
@@ -53,11 +53,11 @@ class KeywordFactory(factory.Factory):
         keyword = super(KeywordFactory, cls)._prepare(create, **kwargs)
 
         if stream:
-            keyword.set_stream(stream)
+            keyword.stream = stream
         if word:
-            keyword.set_word(word)
+            keyword.word = word
         if key_type:
-            keyword.set_key_type(key_type)
+            keyword.key_type = key_type
         if create:
             keyword.save()
         return keyword
