@@ -4,7 +4,7 @@ from tastypie.resources import ModelResource
 from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
 from tastypie import fields
-from keywordapi.keywordapp.models import *
+from keywordapi.models import *
 
 class KeywordResource(ModelResource):
     class Meta:
@@ -16,7 +16,7 @@ class KeywordResource(ModelResource):
         include_resource_uri = False
 
 class StreamResource(ModelResource):
-    keyword = fields.ToManyField('keywordapi.keywordapp.api.KeywordResource',
+    keyword = fields.ToManyField('keywordapi.api.KeywordResource',
                             'keywords')
 
     class Meta:
@@ -28,7 +28,7 @@ class StreamResource(ModelResource):
         include_resource_uri = False
 
 class OwnerResource(ModelResource):
-    stream = fields.ToManyField('keywordapi.keywordapp.api.StreamResource',
+    stream = fields.ToManyField('keywordapi.api.StreamResource',
                             'streams')
 
     def alter_list_data_to_serialize(self, request, data_dict):

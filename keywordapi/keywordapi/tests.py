@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from tastypie.test import ResourceTestCase
 from tastypie.utils.timezone import now
-from keywordapi.keywordapp.models import Owner, Stream, Keyword
-from keywordapi.keywordapp.factories import *
+from keywordapi.models import Owner, Stream, Keyword
+from keywordapi.factories import *
 
 
 class OwnerTest(TestCase):

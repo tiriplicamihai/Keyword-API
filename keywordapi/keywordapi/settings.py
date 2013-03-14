@@ -121,7 +121,7 @@ INSTALLED_APPS = (
 
     'tastypie',
 
-    'keywordapi.keywordapp',
+    'keywordapi',
 )
 
 # A sample logging configuration. The only tangible logging

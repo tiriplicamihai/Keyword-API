@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 
-from keywordapi.keywordapp.api import *
+from keywordapi.api import *
 
 owner_resource = OwnerResource()
 stream_resource = StreamResource()
