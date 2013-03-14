@@ -1,13 +1,12 @@
 from django.conf.urls.defaults import *
-
+from tastypie.api import Api
 from keywordapi.api import *
 
-owner_resource = OwnerResource()
-stream_resource = StreamResource()
-keyword_resource = KeywordResource()
+v1_api = Api(api_name='v1')
+v1_api.register(OwnerResource())
+v1_api.register(StreamResource())
+v1_api.register(KeywordResource())
 
 urlpatterns = patterns('',
-    url(r'^api/', include(owner_resource.urls)),
-    url(r'^api/', include(stream_resource.urls)),
-    url(r'^api/', include(keyword_resource.urls)),
+    url(r'^api/', include(v1_api.urls)),
 )
