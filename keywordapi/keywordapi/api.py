@@ -6,11 +6,13 @@ from tastypie.authorization import Authorization
 from tastypie import fields
 from keywordapi.models import *
 
+class MetaBase:
+    excludes = ['id']
+
 class KeywordResource(ModelResource):
-    class Meta:
+    class Meta(MetaBase):
         queryset = Keyword.objects.all()
         resource_name = 'keyword/list'
-        excludes = ['id']
         authentication = BasicAuthentication()
         authorization = Authorization()
         include_resource_uri = False
@@ -19,10 +21,9 @@ class StreamResource(ModelResource):
     keyword = fields.ToManyField('keywordapi.api.KeywordResource',
                             'keywords')
 
-    class Meta:
+    class Meta(MetaBase):
         queryset = Stream.objects.all()
         resource_name = 'stream/list'
-        excludes = ['id']
         authentication = BasicAuthentication()
         authorization = Authorization()
         include_resource_uri = False
