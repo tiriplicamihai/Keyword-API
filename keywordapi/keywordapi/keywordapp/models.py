@@ -5,11 +5,6 @@ from django.contrib.auth.models import User
 class Owner(User):
     stream_number = models.IntegerField(default=15)
 
-    def set_stream_number(self, stream_number):
-        self.stream_number = stream_number
-
-    def get_stream_number(self):
-        return self.stream_number
 
 class Stream(models.Model):
     owner = models.ForeignKey(Owner, related_name='streams', null=True)
@@ -17,34 +12,6 @@ class Stream(models.Model):
     date = models.DateField(default=now)
     language = models.CharField(max_length=200, default='English')
     location = models.CharField(max_length=200, default='US')
-
-    def get_owner(self):
-        return self.owner
-
-    def get_name(self):
-        return self.name
-
-    def get_location(self):
-        return self.location
-
-    def get_language(self):
-        return self.language
-
-    def set_owner(self, owner):
-        self.owner = owner
-        self.save()
-
-    def set_name(self, name):
-        self.name = name
-        self.save()
-
-    def set_location(self, location):
-        self.location = location
-        self.save()
-
-    def set_language(self, language):
-        self.language = language
-        self.save()
 
 
 class Keyword(models.Model):
@@ -57,27 +24,4 @@ class Keyword(models.Model):
     stream = models.ForeignKey(Stream, related_name='keywords', null=True)
     word = models.CharField(max_length=60)
     key_type = models.CharField(max_length=1, choices=TYPE, default='A')
-
-    def set_stream(self, stream):
-        self.stream = stream;
-        self.save()
-
-    def set_key_type(self, ktype):
-        for t in self.TYPE:
-            if ktype in t:
-                self.key_type = ktype
-                self.save()
-
-    def set_word(self, word):
-        self.word = word
-        self.save()
-
-    def get_stream(self):
-        return self.stream
-
-    def get_key_type(self):
-        return self.key_type
-
-    def get_word(self):
-        return self.word
 
