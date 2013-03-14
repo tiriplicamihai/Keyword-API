@@ -8,6 +8,7 @@ from keywordapi.models import *
 
 class MetaBase:
     excludes = ['id']
+    include_resource_uri = False
 
 class KeywordResource(ModelResource):
     class Meta(MetaBase):
@@ -15,7 +16,6 @@ class KeywordResource(ModelResource):
         resource_name = 'keyword/list'
         authentication = BasicAuthentication()
         authorization = Authorization()
-        include_resource_uri = False
 
 class StreamResource(ModelResource):
     keyword = fields.ToManyField('keywordapi.api.KeywordResource',
@@ -26,7 +26,6 @@ class StreamResource(ModelResource):
         resource_name = 'stream/list'
         authentication = BasicAuthentication()
         authorization = Authorization()
-        include_resource_uri = False
 
 class OwnerResource(ModelResource):
     stream = fields.ToManyField('keywordapi.api.StreamResource',
@@ -40,10 +39,9 @@ class OwnerResource(ModelResource):
                 del(data_dict['objects'])
             return data_dict
 
-    class Meta:
+    class Meta(MetaBase):
         queryset = Owner.objects.all()
         resource_name = 'owner/list'
-        include_resource_uri = False
         always_return_data = True
         fields = ['username', 'stream_number']
         authorization = Authorization()
