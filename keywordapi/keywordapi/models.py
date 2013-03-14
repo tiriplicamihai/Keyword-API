@@ -1,6 +1,7 @@
 from tastypie.utils.timezone import now
 from django.db import models
 from django.contrib.auth.models import User
+from model_constants import TYPE
 
 class Owner(User):
     stream_number = models.IntegerField(default=15)
@@ -15,11 +16,6 @@ class Stream(models.Model):
 
 
 class Keyword(models.Model):
-    TYPE = (
-        ('A', 'Must contain'),
-        ('O', 'May contain'),
-        ('N', 'Must not contain'),
-    )
 
     stream = models.ForeignKey(Stream, related_name='keywords', null=True)
     word = models.CharField(max_length=60)
