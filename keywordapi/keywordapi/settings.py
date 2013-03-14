@@ -3,6 +3,8 @@
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -120,6 +122,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 
     'tastypie',
+    'django_nose',
 
     'keywordapi',
 )
