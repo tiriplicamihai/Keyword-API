@@ -11,12 +11,12 @@ from keywordapi.keywordapp.factories import *
 class OwnerTest(TestCase):
     def test_default_stream_number(self):
         owner = OwnerFactory()
-        self.assertTrue(owner.get_stream_number()==15)
+        self.assertTrue(owner.stream_number==15)
 
     def test_stream_number(self):
         owner = OwnerFactory(stream_number=20)
-        self.assertFalse(owner.get_stream_number()==15)
-        self.assertTrue(owner.get_stream_number()==20)
+        self.assertFalse(owner.stream_number==15)
+        self.assertTrue(owner.stream_number==20)
 
 
 class StreamTest(TestCase):
@@ -25,46 +25,31 @@ class StreamTest(TestCase):
 
     def test_set_owner(self):
         stream = StreamFactory(owner=self.owner)
-        self.assertTrue(stream.get_owner().id==self.owner.id)
-
-        new_owner = OwnerFactory()
-        stream.set_owner(new_owner)
-        self.assertTrue(stream.get_owner().id==new_owner.id)
+        self.assertTrue(stream.owner.id==self.owner.id)
 
     def test_set_name(self):
         name = 'test1'
         stream = StreamFactory(owner=self.owner, name=name)
-        self.assertTrue(stream.get_name()==name)
-
-        new_name = 'test2'
-        stream.set_name(new_name)
-        self.assertTrue(stream.get_name()==new_name)
+        self.assertTrue(stream.name==name)
 
     def test_default_location(self):
         stream = StreamFactory(owner=self.owner)
-        self.assertTrue(stream.get_location()=='US')
+        self.assertTrue(stream.location=='US')
 
     def test_set_location(self):
         location = 'RO'
         stream = StreamFactory(owner=self.owner, location=location)
-        self.assertTrue(stream.get_location()==location)
+        self.assertTrue(stream.location==location)
 
-        new_location = 'UK'
-        stream.set_location(new_location)
-        self.assertTrue(stream.get_location()==new_location)
 
     def test_default_language(self):
         stream = StreamFactory(owner=self.owner)
-        self.assertTrue(stream.get_language()=='English')
+        self.assertTrue(stream.language=='English')
 
     def test_set_language(self):
         language = 'Romanian'
         stream = StreamFactory(owner=self.owner, language=language)
-        self.assertTrue(stream.get_language()==language)
-
-        new_language = 'Hindu'
-        stream.set_language(new_language)
-        self.assertTrue(stream.get_language()==new_language)
+        self.assertTrue(stream.language==language)
 
 
 class KeywordTest(TestCase):
@@ -74,37 +59,21 @@ class KeywordTest(TestCase):
 
     def test_set_stream(self):
         key = KeywordFactory(stream=self.stream)
-        self.assertTrue(key.get_stream().id==self.stream.id)
-
-        stream = StreamFactory()
-        key.set_stream(stream)
-        self.assertTrue(key.get_stream().id==stream.id)
+        self.assertTrue(key.stream.id==self.stream.id)
 
     def test_default_key_type(self):
         key = KeywordFactory(stream=self.stream)
-        self.assertEqual(key.get_key_type(), 'A')
+        self.assertEqual(key.key_type, 'A')
 
     def test_set_key_type(self):
         ktype = 'O';
         key = KeywordFactory(stream=self.stream, key_type=ktype)
-        self.assertEqual(key.get_key_type(), ktype)
-
-        ktype = 'N'
-        key.set_key_type(ktype)
-        self.assertEqual(key.get_key_type(), ktype)
-
-        ktype = 'T'
-        key.set_key_type(ktype)
-        self.assertFalse(key.get_key_type()==ktype)
+        self.assertEqual(key.key_type, ktype)
 
     def test_set_word(self):
         word = 'test'
         key = KeywordFactory(stream=self.stream, word=word)
-        self.assertEqual(key.get_word(), word)
-
-        word = 'newtest'
-        key.set_word(word)
-        self.assertEqual(key.get_word(), word)
+        self.assertEqual(key.word, word)
 
 
 class OwnerResourceTest(ResourceTestCase):
