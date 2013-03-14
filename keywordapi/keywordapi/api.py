@@ -20,7 +20,7 @@ class KeywordResource(ModelResource):
 
     class Meta(MetaBase):
         queryset = Keyword.objects.all()
-        resource_name = 'keyword/list'
+        resource_name = 'keywords'
         authentication = BasicAuthentication()
         authorization = Authorization()
 
@@ -36,7 +36,7 @@ class StreamResource(ModelResource):
 
     class Meta(MetaBase):
         queryset = Stream.objects.all()
-        resource_name = 'stream/list'
+        resource_name = 'streams'
         authentication = BasicAuthentication()
         authorization = Authorization()
 
@@ -52,7 +52,7 @@ class OwnerResource(ModelResource):
 
     class Meta(MetaBase):
         queryset = Owner.objects.all()
-        resource_name = 'owner/list'
+        resource_name = 'owners'
         always_return_data = True
         fields = ['username', 'stream_number']
         authorization = Authorization()
