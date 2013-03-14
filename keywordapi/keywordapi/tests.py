@@ -11,7 +11,7 @@ from keywordapi.factories import *
 
 class OwnerTest(TestCase):
     def test_default_stream_number(self):
-        owner = OwnerFactory()
+        owner = OwnerFactory.build()
         eq_(owner.stream_number, 15)
 
     def test_stream_number(self):
@@ -22,7 +22,7 @@ class OwnerTest(TestCase):
 
 class StreamTest(TestCase):
     def setUp(self):
-        self.owner = OwnerFactory()
+        self.owner = OwnerFactory.build()
 
     def test_set_owner(self):
         stream = StreamFactory(owner=self.owner)
@@ -55,7 +55,7 @@ class StreamTest(TestCase):
 
 class KeywordTest(TestCase):
     def setUp(self):
-        self.owner = OwnerFactory()
+        self.owner = OwnerFactory.build()
         self.stream = StreamFactory(owner=self.owner)
 
     def test_set_stream(self):
@@ -115,7 +115,7 @@ class OwnerResourceTest(ResourceTestCase):
         self.assertHttpCreated(self.api_client.post('/api/v1/owners/',
             format='json', data=self.post_data,
             authentication=self.get_credentials()))
-        self.assertEqual(Owner.objects.count(), owner_no + 1)
+        eq_(Owner.objects.count(), owner_no + 1)
 
     def test_put_unauthenticated(self):
         self.assertHttpUnauthorized(self.api_client.put(self.detail_url,
@@ -131,8 +131,8 @@ class OwnerResourceTest(ResourceTestCase):
         self.assertHttpAccepted(self.api_client.put(self.detail_url,
             format='json', data=new_data,
             authentication=self.get_credentials()))
-        self.assertEqual(Owner.objects.count(), owner_no)
-        self.assertEqual(Owner.objects.get(pk=self.owner_1.pk).stream_number, 60)
+        eq_(Owner.objects.count(), owner_no)
+        eq_(Owner.objects.get(pk=self.owner_1.pk).stream_number, 60)
 
     def test_delete_unauthenticated(self):
         self.assertHttpUnauthorized(self.api_client.delete(self.detail_url,
@@ -142,7 +142,7 @@ class OwnerResourceTest(ResourceTestCase):
         owner_no = Owner.objects.count()
         self.assertHttpAccepted(self.api_client.delete(self.detail_url,
             format='json', authentication=self.get_credentials()))
-        self.assertEqual(Owner.objects.count(), owner_no - 1)
+        eq_(Owner.objects.count(), owner_no - 1)
 
 
 class StreamResourceTest(ResourceTestCase):
@@ -185,7 +185,7 @@ class StreamResourceTest(ResourceTestCase):
         self.assertHttpCreated(self.api_client.post('/api/v1/streams/',
             format='json', data=self.post_data,
             authentication=self.get_credentials()))
-        self.assertEqual(Stream.objects.count(), stream_no + 1)
+        eq_(Stream.objects.count(), stream_no + 1)
 
     def test_put_unauthenticated(self):
         self.assertHttpUnauthorized(self.api_client.put(self.detail_url,
@@ -205,10 +205,10 @@ class StreamResourceTest(ResourceTestCase):
             format='json', data=new_data,
             authentication=self.get_credentials()))
 
-        self.assertEqual(Stream.objects.count(), stream_no)
-        self.assertEqual(Stream.objects.get(pk=self.stream.pk).language, 'French')
-        self.assertEqual(Stream.objects.get(pk=self.stream.pk).name, 'test')
-        self.assertEqual(Stream.objects.get(pk=self.stream.pk).location, 'UK')
+        eq_(Stream.objects.count(), stream_no)
+        eq_(Stream.objects.get(pk=self.stream.pk).language, 'French')
+        eq_(Stream.objects.get(pk=self.stream.pk).name, 'test')
+        eq_(Stream.objects.get(pk=self.stream.pk).location, 'UK')
 
     def test_delete_unauthenticated(self):
         self.assertHttpUnauthorized(self.api_client.delete(self.detail_url,
@@ -218,7 +218,7 @@ class StreamResourceTest(ResourceTestCase):
         stream_no = Stream.objects.count()
         self.assertHttpAccepted(self.api_client.delete(self.detail_url,
             format='json', authentication=self.get_credentials()))
-        self.assertEqual(Stream.objects.count(), stream_no - 1)
+        eq_(Stream.objects.count(), stream_no - 1)
 
 
 class KeywordResourceTest(ResourceTestCase):
@@ -261,7 +261,7 @@ class KeywordResourceTest(ResourceTestCase):
         self.assertHttpCreated(self.api_client.post('/api/v1/keywords/',
             format='json', data=self.post_data,
             authentication=self.get_credentials()))
-        self.assertEqual(Keyword.objects.count(), keyword_no + 1)
+        eq_(Keyword.objects.count(), keyword_no + 1)
 
     def test_put_unauthenticated(self):
         self.assertHttpUnauthorized(self.api_client.put(self.detail_url,
@@ -280,10 +280,10 @@ class KeywordResourceTest(ResourceTestCase):
             format='json', data=new_data,
             authentication=self.get_credentials()))
 
-        self.assertEqual(Keyword.objects.count(), keyword_no)
+        eq_(Keyword.objects.count(), keyword_no)
         kw = Keyword.objects.get(pk=self.keyword.pk)
-        self.assertEqual(kw.word, 'keyword')
-        self.assertEqual(kw.key_type, 'N')
+        eq_(kw.word, 'keyword')
+        eq_(kw.key_type, 'N')
 
     def test_delete_unauthenticated(self):
         self.assertHttpUnauthorized(self.api_client.delete(self.detail_url,
@@ -293,5 +293,5 @@ class KeywordResourceTest(ResourceTestCase):
         keyword_no = Keyword.objects.count()
         self.assertHttpAccepted(self.api_client.delete(self.detail_url,
             format='json', authentication=self.get_credentials()))
-        self.assertEqual(Keyword.objects.count(), keyword_no - 1)
+        eq_(Keyword.objects.count(), keyword_no - 1)
 
