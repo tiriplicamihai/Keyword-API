@@ -62,6 +62,8 @@ STATIC_ROOT = ''
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
@@ -120,6 +122,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 
     'tastypie',
+    'django_nose',
 
     'keywordapi',
 )
