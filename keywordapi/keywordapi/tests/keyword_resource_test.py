@@ -10,6 +10,7 @@ from keywordapi.factories import *
 
 
 class KeywordResourceTest(ResourceTestCase):
+    fixtures = ['test_entries.json']
     def setUp(self):
         super(KeywordResourceTest, self).setUp()
 
@@ -23,7 +24,7 @@ class KeywordResourceTest(ResourceTestCase):
         self.detail_url = '/api/v1/keywords/{0}/'.format(self.keyword.pk)
         self.post_data = {
                 'word': 'newkey',
-                'stream': self.stream.pk,
+                'stream': '/api/v1/streams/{0}/'.format(self.stream.pk),
                 'key_type': 'O'
                 }
 

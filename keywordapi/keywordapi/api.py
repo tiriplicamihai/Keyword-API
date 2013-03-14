@@ -7,7 +7,6 @@ from tastypie import fields
 from keywordapi.models import *
 
 class MetaBase:
-    excludes = ['id']
     include_resource_uri = False
     authentication = BasicAuthentication()
     authorization = Authorization()
