@@ -11,6 +11,13 @@ class MetaBase:
     include_resource_uri = False
 
 class KeywordResource(ModelResource):
+
+    def alter_list_data_to_serialize(self, request, data_dict):
+        if isinstance(data_dict, dict):
+            if 'meta' in data_dict:
+                del(data_dict['meta'])
+            return data_dict
+
     class Meta(MetaBase):
         queryset = Keyword.objects.all()
         resource_name = 'keyword/list'
@@ -20,6 +27,12 @@ class KeywordResource(ModelResource):
 class StreamResource(ModelResource):
     keyword = fields.ToManyField('keywordapi.api.KeywordResource',
                             'keywords')
+
+    def alter_list_data_to_serialize(self, request, data_dict):
+        if isinstance(data_dict, dict):
+            if 'meta' in data_dict:
+                del(data_dict['meta'])
+            return data_dict
 
     class Meta(MetaBase):
         queryset = Stream.objects.all()
@@ -35,8 +48,6 @@ class OwnerResource(ModelResource):
         if isinstance(data_dict, dict):
             if 'meta' in data_dict:
                 del(data_dict['meta'])
-                data_dict['Owners'] = copy.copy(data_dict['objects'])
-                del(data_dict['objects'])
             return data_dict
 
     class Meta(MetaBase):
