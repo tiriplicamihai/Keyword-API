@@ -10,7 +10,6 @@ from keywordapi.factories import *
 
 
 class KeywordResourceTest(ResourceTestCase):
-    fixtures = ['test_entries.json']
     def setUp(self):
         super(KeywordResourceTest, self).setUp()
 
