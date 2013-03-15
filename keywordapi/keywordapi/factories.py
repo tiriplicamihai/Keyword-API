@@ -1,6 +1,7 @@
 import factory
 import random
 from models import *
+from model_constants import KeywordConstants
 
 class OwnerFactory(factory.Factory):
     """
@@ -25,5 +26,5 @@ class KeywordFactory(factory.Factory):
     """
     stream = factory.SubFactory(StreamFactory)
     word = factory.LazyAttribute(lambda n: '%030x' % random.randrange(256 ** 15))
-    key_type = random.choice(['A', 'N', 'O'])
+    key_type = random.choice(KeywordConstants.list_comprehension())
 

@@ -1,7 +1,7 @@
 from tastypie.utils.timezone import now
 from django.db import models
 from django.contrib.auth.models import User
-from model_constants import TYPE
+from model_constants import KeywordConstants
 
 class Owner(User):
     """
@@ -28,5 +28,5 @@ class Keyword(models.Model):
     """
     stream = models.ForeignKey(Stream, related_name='keywords', unique=False)
     word = models.CharField(max_length=60)
-    key_type = models.CharField(max_length=1, choices=TYPE, default='A')
+    key_type = models.CharField(max_length=1, choices=KeywordConstants.TYPES, default='A')
 
