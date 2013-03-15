@@ -7,6 +7,7 @@ from tastypie import fields
 from keywordapi.models import *
 
 class MetaBase:
+    # Will be extended by every Meta class
     excludes = ['id']
     include_resource_uri = False
     authentication = BasicAuthentication()
@@ -14,6 +15,7 @@ class MetaBase:
 
 class KeywordResource(ModelResource):
 
+    # Removes "meta" form the displayed information
     def alter_list_data_to_serialize(self, request, data_dict):
         if isinstance(data_dict, dict):
             if 'meta' in data_dict:
@@ -28,6 +30,7 @@ class StreamResource(ModelResource):
     keyword = fields.ToManyField('keywordapi.api.KeywordResource',
                             'keywords')
 
+    # Removes "meta" form the displayed information
     def alter_list_data_to_serialize(self, request, data_dict):
         if isinstance(data_dict, dict):
             if 'meta' in data_dict:
@@ -42,6 +45,7 @@ class OwnerResource(ModelResource):
     stream = fields.ToManyField('keywordapi.api.StreamResource',
                             'streams')
 
+    # Removes "meta" form the displayed information
     def alter_list_data_to_serialize(self, request, data_dict):
         if isinstance(data_dict, dict):
             if 'meta' in data_dict:
