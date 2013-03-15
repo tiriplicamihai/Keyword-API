@@ -22,7 +22,7 @@ class StreamResourceTest(ResourceTestCase):
         self.detail_url = '/api/v1/streams/{0}/'.format(self.stream.pk)
         self.post_data = {
                 'name': 'newteststream',
-                'owner': self.owner.pk,
+                'owner': '/api/v1/owners/{0}/'.format(self.owner.pk),
                 'keyword': [],
                 'language': 'Romanian',
                 'location': 'RO'

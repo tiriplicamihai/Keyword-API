@@ -14,7 +14,8 @@ class Stream(models.Model):
     """
      Contains informations about one owner streams.
     """
-    owner = models.ForeignKey(Owner, related_name='streams', null=True)
+
+    owner = models.ForeignKey(Owner, related_name='streams', unique=False)
     name = models.CharField(max_length=200)
     date = models.DateField(default=now)
     language = models.CharField(max_length=200, default='English')
@@ -25,7 +26,7 @@ class Keyword(models.Model):
     """
      Contains the keywords selected by a owner for a stream.
     """
-    stream = models.ForeignKey(Stream, related_name='keywords', null=True)
+    stream = models.ForeignKey(Stream, related_name='keywords', unique=False)
     word = models.CharField(max_length=60)
     key_type = models.CharField(max_length=1, choices=TYPE, default='A')
 

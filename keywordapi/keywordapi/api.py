@@ -14,6 +14,7 @@ class MetaBase:
     authorization = Authorization()
 
 class KeywordResource(ModelResource):
+    stream = fields.ForeignKey('keywordapi.api.StreamResource', 'stream')
 
     # Removes "meta" form the displayed information
     def alter_list_data_to_serialize(self, request, data_dict):
@@ -27,6 +28,7 @@ class KeywordResource(ModelResource):
         resource_name = 'keywords'
 
 class StreamResource(ModelResource):
+    owner = fields.ForeignKey('keywordapi.api.OwnerResource', 'owner')
     keyword = fields.ToManyField('keywordapi.api.KeywordResource',
                             'keywords')
 
