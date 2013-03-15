@@ -3,6 +3,9 @@ import random
 from models import *
 
 class OwnerFactory(factory.Factory):
+    # Generates random Owner objects. Will be changed in
+    # f/#24-validation-tests-branch
+
     @classmethod
     def _prepare(cls, create, **kwargs):
         stream_number = kwargs.pop('stream_number', None)
@@ -19,6 +22,9 @@ class OwnerFactory(factory.Factory):
 
 
 class StreamFactory(factory.Factory):
+    # Generates random Stream objects. Will be changed in
+    # f/#24-validation-tests-branch
+
     @classmethod
     def _prepare(cls, create, **kwargs):
         owner = kwargs.pop('owner', None)
@@ -45,6 +51,9 @@ class StreamFactory(factory.Factory):
 
 
 class KeywordFactory(factory.Factory):
+    # Generates random Keyword objects. Will be changed in
+    # f/#24-validation-tests-branch
+
     @classmethod
     def _prepare(cls, create, **kwargs):
         stream = kwargs.pop('stream', None)

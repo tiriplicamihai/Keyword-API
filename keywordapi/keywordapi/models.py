@@ -4,10 +4,16 @@ from django.contrib.auth.models import User
 from model_constants import TYPE
 
 class Owner(User):
+    """
+     Contains information about accounts (companies) owners.
+    """
     stream_number = models.IntegerField(default=15)
 
 
 class Stream(models.Model):
+    """
+     Contains informations about one owner streams.
+    """
     owner = models.ForeignKey(Owner, related_name='streams', null=True)
     name = models.CharField(max_length=200)
     date = models.DateField(default=now)
@@ -16,7 +22,9 @@ class Stream(models.Model):
 
 
 class Keyword(models.Model):
-
+    """
+     Contains the keywords selected by a owner for a stream.
+    """
     stream = models.ForeignKey(Stream, related_name='keywords', null=True)
     word = models.CharField(max_length=60)
     key_type = models.CharField(max_length=1, choices=TYPE, default='A')
